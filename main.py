@@ -14,4 +14,43 @@ for w in movie_reviews.words():
 
 all_words = nltk.FreqDist(all_words)
 
+#get top 3000 most common words using a freq distribution- 
 word_features = list(all_words.keys())[:3000]
+
+# get all words from doc. 
+# set features as empty set
+# loop through all word_features
+# tell if features are present or not
+def find_features(document):
+    words = set(document)
+    features = {}
+    for w in word_features:
+        features[w] = (w in words) 
+
+    return features
+
+# featuresets contains Existence of a word(feature) and category( pos or neg) among all files in our dataset
+featuresets = [(find_features(rev), category) for (rev, category) in documents]
+
+# set that we'll train our classifier with
+training_set = featuresets[:1900]
+
+# set that we'll test against.
+testing_set = featuresets[1900:]
+
+##########################################################
+###  CHOOSING A CLASSIFIER  ##############################
+##########################################################
+
+classifier = nltk.NaiveBayesClassifier.train(training_set)
+
+
+
+#########################################################
+##### CHECK ACCURACY ####################################
+#########################################################
+
+print("Classifier accuracy percent:",(nltk.classify.accuracy(classifier, testing_set))*100)
+
+
+
