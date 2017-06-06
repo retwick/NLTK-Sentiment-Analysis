@@ -33,15 +33,17 @@ def find_features(document):
 # featuresets contains Existence of a word(feature) and category( pos or neg) among all files in our dataset
 featuresets = [(find_features(rev), category) for (rev, category) in documents]
 
-# set that we'll test against.
-testing_set = featuresets[1200:]
+# set that we'll train our classifier with
+training_set = featuresets[:1200]
 
-#load previously saved classifier
-classifier_file = open("NB.pickle", "rb")
-classifier = pickle.load(classifier_file)
+##########################################################
+###  CHOOSING A CLASSIFIER  ##############################
+##########################################################
 
-print("Classifier accuracy percent:",(nltk.classify.accuracy(classifier, testing_set))*100)
+classifier = nltk.NaiveBayesClassifier.train(training_set)
 
-classifier_file.close()
+#SAVING THE CLASSIFIER
 
-
+save_classifier = open("NB.pickle","wb")
+pickle.dump(classifier, save_classifier)
+save_classifier.close()
