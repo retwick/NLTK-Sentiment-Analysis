@@ -45,3 +45,7 @@ print("Classifier accuracy percent:",(nltk.classify.accuracy(classifier, testing
 classifier_file.close()
 
 
+# random shuffle is done twice, which has increased the accuracy by testing some training data
+
+
+
