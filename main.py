@@ -16,8 +16,8 @@ for w in movie_reviews.words():
 all_words = nltk.FreqDist(all_words)
 
 #get top 3000 most common words using a freq distribution- 
-word_features = list(all_words.keys())[:3000]
-
+word_features = list(all_words.keys())[:5]
+print(word_features)
 # get all words from doc. 
 # set features as empty set
 # loop through all word_features
@@ -31,16 +31,16 @@ def find_features(document):
     return features
 
 # featuresets contains Existence of a word(feature) and category( pos or neg) among all files in our dataset
-featuresets = [(find_features(rev), category) for (rev, category) in documents]
+#featuresets = [(find_features(rev), category) for (rev, category) in documents]
 
 # set that we'll test against.
 testing_set = featuresets[1200:]
 
 #load previously saved classifier
-classifier_file = open("NB.pickle", "rb")
-classifier = pickle.load(classifier_file)
+#classifier_file = open("NB.pickle", "rb")
+#classifier = pickle.load(classifier_file)
 
-print("Classifier accuracy percent:",(nltk.classify.accuracy(classifier, testing_set))*100)
+#print("Classifier accuracy percent:",(nltk.classify.accuracy(classifier, testing_set))*100)
 
 classifier_file.close()
 

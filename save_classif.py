@@ -10,6 +10,8 @@ from sklearn.linear_model import LogisticRegression,SGDClassifier
 from sklearn.svm import SVC, LinearSVC, NuSVC
 
 start_time = time.time()
+
+#get data
 documents = [(list(movie_reviews.words(fileid)), category)
              for category in movie_reviews.categories()
              for fileid in movie_reviews.fileids(category)]
@@ -21,7 +23,8 @@ for w in movie_reviews.words():
     all_words.append(w.lower())
 
 all_words = nltk.FreqDist(all_words)
-
+print("all words")
+print(list(all_words.keys())[:10] )
 #get top 3000 most common words using a freq distribution- 
 word_features = list(all_words.keys())[:3000]
 
@@ -50,8 +53,11 @@ testing_set = featuresets[1900:]
 ##########################################################
 
 classifier = nltk.NaiveBayesClassifier.train(training_set)
+#classifier.show_most_informative_features(30)
 print('NB Classifier accuracy percent:',(nltk.classify.accuracy(classifier, testing_set)))
 
+
+"""
 MNB_classifier = SklearnClassifier(MultinomialNB())
 MNB_classifier.train(training_set)
 print("MultinomialNB accuracy percent:",nltk.classify.accuracy(MNB_classifier, testing_set))
@@ -78,9 +84,11 @@ LinearSVC_classifier = SklearnClassifier(LinearSVC())
 LinearSVC_classifier.train(training_set)
 print("LinearSVC_classifier accuracy percent:", (nltk.classify.accuracy(LinearSVC_classifier, testing_set)))
 
+
+
 NuSVC_classifier = SklearnClassifier(NuSVC())
 NuSVC_classifier.train(training_set)
 print("NuSVC_classifier accuracy percent:", (nltk.classify.accuracy(NuSVC_classifier, testing_set)))
-
+"""
 print("Excecution time = %s" %(time.time() - start_time))
 
