@@ -2,9 +2,11 @@ import csv
 import nltk
 import re
 from nltk.tokenize import word_tokenize, sent_tokenize
+#import sys
+#reload(sys)
+#sys.setdefaultencoding('utf-8')
 
-
-ifile = open('small_data.csv', "rb")
+ifile = open('Sentiment Analysis Dataset.csv', "rb")
 reader = csv.reader(ifile)
 
 #start process_tweet
@@ -27,6 +29,8 @@ def processTweet(tweet):
     tweet = re.sub('(!)|(-)', '',tweet)
     #remove multiple dots
     tweet = re.sub('\.\.+', '',tweet)
+    #remove crappy symbols
+
     #trim
     tweet = tweet.strip('\'"')
     return tweet
@@ -35,16 +39,10 @@ def processTweet(tweet):
 
 
 
-
-
-
-
-
-
-
 PosWordFileVar = open("pos.txt",'w')
 NegWordFileVar = open("neg.txt", 'w')
 
+print("writing to pos and neg files")
 
 data = [] 
 rownum = 0
@@ -53,11 +51,11 @@ for row in reader:
 	if rownum == 0:
 		header = row
 	else:
-		#print '%s: %s' % (header[colnum], row[3])
 		data.append([row[3], row[1]])
  		#print("Processed tweet")
         #print ( processTweet(row[3]))
         #print("Word tokenize")
+        row[3] = unicode(row[3], errors='ignore')
 
         for x in sent_tokenize(processTweet(row[3])):
             x += "\n"
@@ -71,66 +69,66 @@ for row in reader:
 PosWordFileVar.close()
 NegWordFileVar.close()
 
+print("finished writing to pos and neg files")
+print("reading from files")
 
 PosWordFileVar = open("pos.txt", 'r')
 NegWordFileVar = open("neg.txt", 'r')
 StopWordsFileVar = open("stop_words.txt",'r')
 
-words = nltk.word_tokenize(PosWordFileVar.read())
-words += nltk.word_tokenize(NegWordFileVar.read())
+AllWordsVar = nltk.word_tokenize(PosWordFileVar.read())
+AllWordsVar += nltk.word_tokenize(NegWordFileVar.read())
     
 # Remove single-character tokens (mostly punctuation)
-words = [word for word in words if len(word) > 1]
+AllWordsVar = [word for word in AllWordsVar if (len(word) > 1 ) ]
 
 stop_words_var = word_tokenize(StopWordsFileVar.read())
+AllWordsVar = [x for x in AllWordsVar if not x in stop_words_var]
 
-    
+#print(features)
 
-words = [x for x in words if not x in stop_words_var]
+fdist = nltk.FreqDist(AllWordsVar)
+features = []
 
-#print(words)
-print("\n\n\n\n")
-fdist = nltk.FreqDist(words)
+
+
+########################################################################################################
+#        set number of features to 10
+########################################################################################################
 for word,frequency in fdist.most_common(15):
-    print(u'{} - {}'.format(word, frequency))
+    features.append(word)
+    #print(u'{} - {}'.format(word, frequency))
 
-
-print("\n\n\n")
-#print(stop_words_var)
-#print("\nDATA \n")
-#print(data)
-
-"""
-PUT THIS BAAAAAAAAAACK
-
-all_words_var = []
-for x in AllWordFile_Var:
-    all_words_var.append(x)
-"""
-
-#fdist = nltk.FreqDist(all_words_var)
-# write all words to AllWordFile
+#print(features)
 
 
 
 
 
-
-#freq_words = nltk.FreqDist(data)[:5]
 #get top 3000 most common words using a freq distribution- 
-#word_features = list(freq_words.keys())[:3000]
+
 
 # get all words from doc. 
 # set features as empty set
 # loop through all word_features
 # tell if features are present or not
 
-def find_features(document):
-    words = set(document)
-    features = {}
-    for w in word_features:
-        features[w] = (w in words) 
+def find_features(content):
+    words = word_tokenize(content)
+    print("\nwords")
+    print(words)
+    check_features = {}
+    for w in features:
+        check_features[w] = (w in words) 
 
-    return features
- 
+    return check_features
+
+print(find_features("oh my good this is good i have a feeling of love"))
+
+
+PosWordFileVar = close()
+NegWordFileVar = close()
+StopWordsFileVar = close() 
+
+
 ifile.close()
