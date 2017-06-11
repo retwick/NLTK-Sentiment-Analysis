@@ -3,6 +3,7 @@ import nltk
 import re
 from nltk.tokenize import word_tokenize, sent_tokenize
 
+
 ifile = open('small_data.csv', "rb")
 reader = csv.reader(ifile)
 
@@ -20,20 +21,20 @@ def processTweet(tweet):
     tweet = re.sub('[\s]+', ' ', tweet)
     #Replace #word with word
     tweet = re.sub(r'#([^\s]+)', r'\1', tweet)
-
+    #remove numbers
+    tweet = re.sub('[0-9]', '',tweet)
+    #remove common symbols
+    tweet = re.sub('(!)|(-)', '',tweet)
+    #remove multiple dots
+    tweet = re.sub('\.\.+', '',tweet)
     #trim
     tweet = tweet.strip('\'"')
     return tweet
 #end
 
-#Read the tweets one by one and process it
 
 
-"""
-input_data = raw_input("give me some text.\n")
-print("Processed data:")
-print(processTweet(input_data))
-"""
+
 
 
 
@@ -44,6 +45,7 @@ print(processTweet(input_data))
 PosWordFileVar = open("pos.txt",'w')
 NegWordFileVar = open("neg.txt", 'w')
 
+
 data = [] 
 rownum = 0
 for row in reader:
@@ -53,8 +55,8 @@ for row in reader:
 	else:
 		#print '%s: %s' % (header[colnum], row[3])
 		data.append([row[3], row[1]])
- 		print("Processed tweet")
-        print ( processTweet(row[3]))
+ 		#print("Processed tweet")
+        #print ( processTweet(row[3]))
         #print("Word tokenize")
 
         for x in sent_tokenize(processTweet(row[3])):
@@ -72,7 +74,29 @@ NegWordFileVar.close()
 
 PosWordFileVar = open("pos.txt", 'r')
 NegWordFileVar = open("neg.txt", 'r')
+StopWordsFileVar = open("stop_words.txt",'r')
 
+words = nltk.word_tokenize(PosWordFileVar.read())
+words += nltk.word_tokenize(NegWordFileVar.read())
+    
+# Remove single-character tokens (mostly punctuation)
+words = [word for word in words if len(word) > 1]
+
+stop_words_var = word_tokenize(StopWordsFileVar.read())
+
+    
+
+words = [x for x in words if not x in stop_words_var]
+
+#print(words)
+print("\n\n\n\n")
+fdist = nltk.FreqDist(words)
+for word,frequency in fdist.most_common(15):
+    print(u'{} - {}'.format(word, frequency))
+
+
+print("\n\n\n")
+#print(stop_words_var)
 #print("\nDATA \n")
 #print(data)
 
